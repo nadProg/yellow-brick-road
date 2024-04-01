@@ -18,3 +18,5 @@ jobs:
         run: npm install
       - name: Linting
         run: npm run lint
+      - name: Checking types
+        run: tsc --noEmit
