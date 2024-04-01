@@ -21,6 +21,8 @@ jobs:
     needs:
       - install
     runs-on: ubuntu-22.04
+    env:
+      PATH: ${{ steps.install.outputs.path }}
     steps:
       - name: Checking types
         run: tsc --noEmit
@@ -29,6 +31,8 @@ jobs:
     needs:
       - install
     runs-on: ubuntu-22.04
+    env:
+      PATH: ${{ steps.install.outputs.path }}
     steps:
       - name: Linting
         run: npm run lint
