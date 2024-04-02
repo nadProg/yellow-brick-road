@@ -1,7 +1,7 @@
 name: Main pull request
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
