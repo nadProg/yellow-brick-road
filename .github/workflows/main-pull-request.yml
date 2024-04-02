@@ -1,0 +1,42 @@
+name: Main pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04 ]
+        node-version: [ 18.x.x ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Checking types
+        run: tsc --noEmit
+      - name: Linting
+        run: npm run lint
+  deploy:
+    needs: check
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: true
+      steps:
+        - name: SSH Command
+          uses: D3rHase/ssh-command-action@v0.2.2
+          with:
+            host: ${{ secrets.PRODUCTION_SSH_HOST }}
+            user: ${{ secrets.PRODUCTION_SSH_USERNAME }}
+            private_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+            host_fingerprint: ${{ secrets.PRODUCTION_SSH_FINGERPRINT }}
+            command: source ~/.nvm/nvm.sh; echo "Hello world"
