@@ -2,6 +2,8 @@ name: Every push check
 
 on:
   push:
+    branches-ignore:
+      - main
 
 jobs:
   check:
