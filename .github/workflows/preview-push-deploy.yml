@@ -27,21 +27,21 @@ jobs:
       - name: Linting
         run: npm run lint
 
-#  deploy:
-#    needs: check
-#    strategy:
-#      matrix:
-#        os: [ ubuntu-22.04 ]
-#    runs-on: ${{ matrix.os }}
-#    concurrency:
-#      group: production-deploy
-#      cancel-in-progress: true
-#    steps:
-#      - name: SSH Command
-#        uses: D3rHase/ssh-command-action@v0.2.2
-#        with:
-#          host: ${{ secrets.PRODUCTION_SSH_HOST }}
-#          user: ${{ secrets.PRODUCTION_SSH_USERNAME }}
-#          private_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
-#          host_fingerprint: ${{ secrets.PRODUCTION_SSH_FINGERPRINT }}
-#          command: exec bash; ~/main-deploy.sh
+  deploy:
+    needs: check
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04 ]
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: preview-deploy
+      cancel-in-progress: true
+    steps:
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.DEVELOPMENT_SSH_HOST }}
+          user: ${{ secrets.DEVELOPMENT_SSH_USERNAME }}
+          private_key: ${{ secrets.DEVELOPMENT_SSH_PRIVATE_KEY }}
+          host_fingerprint: ${{ secrets.DEVELOPMENT_SSH_FINGERPRINT }}
+          command: bash -c "source ~/.nvm/nvm.sh && ~/preview-deploy.sh"
