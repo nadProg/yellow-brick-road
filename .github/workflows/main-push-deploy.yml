@@ -34,14 +34,14 @@ jobs:
         os: [ ubuntu-22.04 ]
     runs-on: ${{ matrix.os }}
     concurrency:
-      group: production-deploy
+      group: main-deploy
       cancel-in-progress: true
     steps:
-      - name: SSH Command
+      - name: SSH Command Action
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.PRODUCTION_SSH_HOST }}
           user: ${{ secrets.PRODUCTION_SSH_USERNAME }}
           private_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
           host_fingerprint: ${{ secrets.PRODUCTION_SSH_FINGERPRINT }}
-          command: exec bash; ~/main-deploy.sh
+          command: bash -c "source ~/.nvm/nvm.sh && ~/main-deploy.sh"
